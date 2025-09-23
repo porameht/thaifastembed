@@ -1,0 +1,74 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "thaifastembed"
+version = "0.1.1"
+description = "Thai BM25 sparse embeddings compatible with Qdrant for hybrid search"
+authors = ["porameht <poramehtkh@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "thaifastembed" }]
+repository = "https://github.com/porameht/thaifastembed"
+homepage = "https://github.com/porameht/thaifastembed"
+documentation = "https://github.com/porameht/thaifastembed#readme"
+keywords = ["thai", "nlp", "bm25", "sparse-embeddings", "qdrant", "hybrid-search"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+[[tool.poetry.source]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+priority = "explicit"
+
+[tool.poetry.dependencies]
+python = ">=3.10.0"
+numpy = [
+    { version = ">=1.21", python = ">=3.10,<3.12" },
+    { version = ">=1.26", python = ">=3.12,<3.13" },
+    { version = ">=2.1.0", python = ">=3.13" },
+    { version = ">=1.21,<2.1.0", python = "<3.10" },
+]
+mmh3 = "4.0.0"
+pythainlp = "5.1.2"
+py-rust-stemmers = "0.1.5"
+scikit-learn = "1.7.1"
+tzdata = "^2024.1" # Add this line for PyThaiNLP timezone support
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+pytest-cov = "^4.0.0"
+black = "^23.0.0"
+isort = "^5.12.0"
+mypy = "^1.0.0"
+pip-audit = "^2.6.0"
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
