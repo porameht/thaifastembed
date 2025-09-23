@@ -22,6 +22,7 @@ publish-test: build
 	poetry publish --repository testpypi
 
 publish: test build
+	poetry check
 	poetry publish
 
 clean:

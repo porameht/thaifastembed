@@ -52,6 +52,9 @@ jobs:
     - name: Run tests
       run: poetry run pytest tests/ -v
 
+    - name: Check package
+      run: poetry check
+
     - name: Build package
       run: poetry build
 
