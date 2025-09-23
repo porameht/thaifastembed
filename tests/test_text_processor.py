@@ -67,9 +67,10 @@ class TestPyThaiNLPTokenizer:
         """Test tokenizer initialization."""
         tokenizer = PyThaiNLPTokenizer()
         assert tokenizer.engine == "newmm"
+        assert tokenizer.custom_dict is None  # Default: no custom dictionary
 
-        tokenizer_no_dict = PyThaiNLPTokenizer(use_custom_dict=False)
-        assert tokenizer_no_dict.custom_dict is None
+        tokenizer_with_custom = PyThaiNLPTokenizer(custom_words=["test", "word"])
+        assert tokenizer_with_custom.custom_dict is not None
     
     def test_thai_tokenization(self):
         """Test Thai text tokenization."""

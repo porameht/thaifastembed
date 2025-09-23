@@ -3,31 +3,51 @@ Tests for PyThaiNLPTokenizer with enhanced custom dictionary support.
 """
 
 from thaifastembed.text_processor import TextProcessor, PyThaiNLPTokenizer
-from thaifastembed.utils import load_custom_dict
-from pythainlp.tokenize import Trie
 
 class TestCustomDictionary:
     """Test PyThaiNLPTokenizer with enhanced custom dictionary for furniture terms."""
 
-    def test_custom_dict_loads_from_file(self):
-        """Verify custom dictionary loads from words.txt."""
-        tokenizer = PyThaiNLPTokenizer()
+    @property
+    def test_furniture_words(self):
+        """Test furniture vocabulary for testing purposes."""
+        return [
+            # Thai furniture terms
+            "โซฟา", "เก้าอี้", "โต๊ะกลาง", "ตู้เย็น", "ตู้กับข้าว",
+            "เตียงนอน", "ชั้นวางของ", "โคมไฟ", "พรมปูพื้น", "ม่านหน้าต่าง",
+            "เครื่องปรับอากาศ", "เครื่องซักผ้า", "ตู้เสื้อผ้า", "เก้าอี้ทำงาน", "โซฟาเบด",
+            # English furniture terms
+            "Sofa", "Coffee Table", "Built-in", "Hood", "Microwave",
+            "Air Conditioner", "Sound Bar", "Living Room", "Bedroom",
+            "Kitchen", "Dining Room", "Office Chair", "Wardrobe",
+            "Refrigerator", "Washing Machine"
+        ]
 
+    def test_custom_dict_initialization(self):
+        """Verify custom dictionary initialization with user-provided words."""
+        test_words = self.test_furniture_words
+        tokenizer = PyThaiNLPTokenizer(custom_words=test_words)
+        
         assert tokenizer is not None
         assert tokenizer.custom_dict is not None
+        assert tokenizer.custom_words == test_words
 
-        # Use utils function to verify dictionary loads properly
-        custom_dict = load_custom_dict()
-        assert custom_dict is not None, "load_custom_dict should return a Trie object"
-        assert isinstance(custom_dict, Trie), "Should return a Trie instance"
+    def test_default_tokenizer_no_custom_dict(self):
+        """Verify default tokenizer uses PyThaiNLP's built-in dictionary only."""
+        tokenizer = PyThaiNLPTokenizer()
+        
+        assert tokenizer is not None
+        assert tokenizer.custom_dict is None  # No custom dictionary by default
+        assert tokenizer.custom_words == []   # Empty custom words list
 
     def test_tokenizer_modes(self):
         """Test different tokenizer modes: with and without custom dictionary."""
-        # Enhanced mode (default): custom + Thai words
-        with_custom = PyThaiNLPTokenizer(use_custom_dict=True)
+        test_words = self.test_furniture_words
         
-        # No custom mode: PyThaiNLP default only
-        without_custom = PyThaiNLPTokenizer(use_custom_dict=False)
+        # Enhanced mode: custom + Thai words
+        with_custom = PyThaiNLPTokenizer(custom_words=test_words)
+        
+        # Default mode: PyThaiNLP default only
+        without_custom = PyThaiNLPTokenizer()
         
         test_text = "โต๊ะกลาง"
         
@@ -41,8 +61,10 @@ class TestCustomDictionary:
 
     def test_custom_dict_affects_tokenization(self):
         """Prove custom dictionary changes tokenization behavior."""
-        with_dict = PyThaiNLPTokenizer(use_custom_dict=True)
-        without_dict = PyThaiNLPTokenizer(use_custom_dict=False)
+        test_words = self.test_furniture_words
+        
+        with_dict = PyThaiNLPTokenizer(custom_words=test_words)
+        without_dict = PyThaiNLPTokenizer()
 
         test_texts = [
             "โซฟา sofa เก้าอี้HelloWorldไทยEnglishมิกซ์ กินrice",
@@ -68,7 +90,9 @@ class TestCustomDictionary:
 
     def test_thai_furniture_vocabulary(self):
         """Test Thai furniture terms from custom dictionary."""
-        tokenizer = PyThaiNLPTokenizer(use_custom_dict=True)
+        test_words = self.test_furniture_words
+        
+        tokenizer = PyThaiNLPTokenizer(custom_words=test_words)
         processor = TextProcessor(tokenizer=tokenizer)
 
         # Thai furniture terms from words.txt
@@ -88,7 +112,9 @@ class TestCustomDictionary:
 
     def test_english_furniture_from_dict(self):
         """Test English furniture terms from custom dictionary."""
-        tokenizer = PyThaiNLPTokenizer(use_custom_dict=True)
+        test_words = self.test_furniture_words
+        
+        tokenizer = PyThaiNLPTokenizer(custom_words=test_words)
 
         # English furniture terms from words.txt
         english_text = "Modern Sofa with Coffee Table, Built-in Hood and Microwave"
@@ -108,7 +134,9 @@ class TestCustomDictionary:
 
     def test_mixed_language_benefits_from_dict(self):
         """Test mixed Thai-English text benefits from custom dictionary."""
-        tokenizer = PyThaiNLPTokenizer(use_custom_dict=True)
+        test_words = self.test_furniture_words
+        
+        tokenizer = PyThaiNLPTokenizer(custom_words=test_words)
 
         # Mixed text with furniture terms
         mixed_text = "Living room ต้องการ Sofa bed โซฟาเบด"

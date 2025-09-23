@@ -9,7 +9,6 @@ from .sparse_embedding import SparseEmbedding
 from .bm25 import ThaiBm25
 from .types import NumpyArray, IntArray, Tokenizer
 from .text_processor import TextProcessor, StopwordsFilter, Stemmer, PyThaiNLPTokenizer
-from .utils import load_custom_dict
 
 __version__ = "0.1.0"
 __all__ = [
@@ -22,5 +21,4 @@ __all__ = [
     "StopwordsFilter",
     "Stemmer",
     "PyThaiNLPTokenizer",
-    "load_custom_dict",
 ]

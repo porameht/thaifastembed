@@ -4,7 +4,7 @@ install:
 	poetry install
 
 test:
-	poetry run pytest tests/ -v --cov=thaifastembed
+	python -m pytest tests/ -v --cov=thaifastembed
 
 build: clean
 	poetry build

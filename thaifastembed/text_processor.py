@@ -10,7 +10,6 @@ from pythainlp.corpus import thai_stopwords
 from pythainlp.corpus.common import thai_words
 from pythainlp.util import dict_trie
 from .types import Tokenizer
-from .utils import load_custom_dict
 
 
 
@@ -44,37 +43,31 @@ class PyThaiNLPTokenizer(Tokenizer):
     """
     Thai tokenizer with enhanced custom dictionary support.
 
-    - Optional custom dictionary from words.txt combined with PyThaiNLP's Thai words
+    - Optional custom dictionary provided by user combined with PyThaiNLP's Thai words
     - Configurable tokenization engine
     """
 
-    def __init__(self, engine: str = "newmm", use_custom_dict: bool = True):
+    def __init__(self, engine: str = "newmm", custom_words: Optional[List[str]] = None):
         """
         Initialize the PyThaiNLP tokenizer.
 
         Args:
             engine: Tokenization engine ("newmm", "longest", "attacut", etc.)
-            use_custom_dict: Whether to use enhanced custom dictionary (combines words.txt + Thai words)
+            custom_words: Optional list of custom words to add to the dictionary
         """
         self.engine = engine
-        self.use_custom_dict = use_custom_dict
+        self.custom_words = custom_words or []
         self.custom_dict = self._create_dictionary()
 
     def _create_dictionary(self):
         """Create the appropriate dictionary based on configuration."""
-        if not self.use_custom_dict:
+        if not self.custom_words:
+            # Default: use PyThaiNLP's built-in dictionary (no custom dict needed)
             return None
         
-        # Load custom words from words.txt
-        custom_trie = load_custom_dict()
-        custom_words = list(custom_trie) if custom_trie else []
-        
-        if not custom_words:
-            return None
-        
-        # combine custom words with PyThaiNLP's Thai words
+        # If custom words provided, combine with PyThaiNLP's Thai words
         thai_nlp_words = list(thai_words())
-        all_words = list(set(custom_words + thai_nlp_words))
+        all_words = list(set(self.custom_words + thai_nlp_words))
         
         # Create dictionary with combined words
         return dict_trie(dict_source=all_words)
@@ -130,7 +123,7 @@ class TextProcessor:
         min_token_len: Optional[int] = None,
         max_token_len: Optional[int] = None,
     ):
-        # Use enhanced PyThaiNLP tokenizer as default if none provided
+        # Use default PyThaiNLP tokenizer if none provided
         self.tokenizer = tokenizer if tokenizer is not None else PyThaiNLPTokenizer()
 
         # Use default Thai stopwords if no filter provided
