@@ -4,8 +4,8 @@ build-backend = "maturin"
 
 [tool.poetry]
 name = "thaifastembed"
-version = "0.1.1"
-description = "Thai BM25 sparse embeddings compatible with Qdrant for hybrid search"
+version = "0.1.2"
+description = "High-performance BM25 sparse embeddings library optimized for Thai text processing."
 authors = ["porameht <poramehtkh@gmail.com>"]
 readme = "README.md"
 keywords = ["thai", "nlp", "bm25", "sparse-embeddings", "qdrant", "hybrid-search"]
