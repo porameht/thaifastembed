@@ -32,7 +32,7 @@ jobs:
         pip install poetry
 
     - name: Update poetry lock file
-      run: poetry lock --no-update
+      run: poetry lock
 
     - name: Load cached venv
       id: cached-poetry-dependencies

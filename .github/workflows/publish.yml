@@ -39,7 +39,7 @@ jobs:
         pip install poetry
 
     - name: Update poetry lock file
-      run: poetry lock --no-update
+      run: poetry lock
 
     - name: Install maturin
       run: pip install maturin
@@ -81,7 +81,7 @@ jobs:
         pip install poetry
 
     - name: Update poetry lock file
-      run: poetry lock --no-update
+      run: poetry lock
 
     - name: Install dependencies for testing
       run: poetry install --no-interaction
