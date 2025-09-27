@@ -8,6 +8,12 @@ A BM25-based sparse embedding library specialized for Thai text processing with 
 pip install thaifastembed
 ```
 
+### Test 
+
+```
+python example.py 
+```
+
 ### Basic Usage
 
 ```python
