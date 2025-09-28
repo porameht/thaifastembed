@@ -32,8 +32,8 @@ impl SparseEmbedding {
     ) -> PyResult<Self> {
         if token_dict.is_empty() {
             return Ok(SparseEmbedding {
-                indices: vec![].to_pyarray_bound(py).unbind(),
-                values: vec![].to_pyarray_bound(py).unbind(),
+                indices: [].to_pyarray_bound(py).unbind(),
+                values: [].to_pyarray_bound(py).unbind(),
             });
         }
 
@@ -81,10 +81,6 @@ mod tests {
     }
 
     impl TestSparseEmbedding {
-        fn new(values: Vec<f32>, indices: Vec<u32>) -> Self {
-            Self { indices, values }
-        }
-
         fn from_dict(dict: HashMap<u32, f32>) -> Self {
             if dict.is_empty() {
                 return Self {

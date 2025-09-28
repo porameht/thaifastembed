@@ -75,6 +75,12 @@ pub struct StopwordsFilter {
     stopwords: HashSet<String>,
 }
 
+impl Default for StopwordsFilter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StopwordsFilter {
     /// Load Thai stopwords from stopwords_th.txt file
     fn load_thai_stopwords() -> HashSet<String> {
@@ -104,6 +110,11 @@ impl StopwordsFilter {
     /// Get number of loaded stopwords
     pub fn len(&self) -> usize {
         self.stopwords.len()
+    }
+
+    /// Check if stopwords collection is empty
+    pub fn is_empty(&self) -> bool {
+        self.stopwords.is_empty()
     }
 }
 
@@ -185,13 +196,11 @@ mod tests {
     use std::collections::HashSet;
 
     // Mock structures for testing tokenizer logic without PyO3
-    struct MockTokenizer {
-        custom_words: Option<Vec<String>>,
-    }
+    struct MockTokenizer;
 
     impl MockTokenizer {
-        fn new(custom_words: Option<Vec<String>>) -> Self {
-            Self { custom_words }
+        fn new(_custom_words: Option<Vec<String>>) -> Self {
+            Self
         }
 
         fn tokenize(&self, text: &str) -> Vec<String> {

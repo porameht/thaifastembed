@@ -133,10 +133,6 @@ mod tests {
     }
 
     impl MockSparseEmbedding {
-        fn new(values: Vec<f32>, indices: Vec<u32>) -> Self {
-            Self { indices, values }
-        }
-
         fn from_dict(dict: HashMap<u32, f32>) -> Self {
             if dict.is_empty() {
                 return Self {
@@ -259,7 +255,10 @@ mod tests {
             token_ids.sort();
 
             let values = vec![1.0; token_ids.len()];
-            MockSparseEmbedding::new(values, token_ids)
+            MockSparseEmbedding {
+                indices: token_ids,
+                values,
+            }
         }
     }
 
