@@ -23,19 +23,22 @@ pip install thaifastembed
 ```
 
 **Requirements:**
-- Python 3.10+
+- Python 3.10+ (supports 3.10, 3.11, 3.12)
+- Dependencies: numpy (for array handling)
 - Rust toolchain (for development only)
 
 ## 🔧 Quick Start
 
 ```python
-from thaifastembed import ThaiBm25, Tokenizer, TextProcessor, StopwordsFilter
+from thaifastembed import ThaiBm25, SparseEmbedding, Tokenizer, TextProcessor, StopwordsFilter
 
 # Sample Thai documents
 documents = [
     "ประเทศไทยมีวัฒนธรรมที่หลากหลาย",
-    "อาหารไทยมีรสชาติเผ็ด หวาน เปรียว เค็ม",
-    "กรุงเทพมหานครเป็นเมืองหลวงของประเทศไทย"
+    "อาหารไทยมีรสชาติเผ็ด หวาน เปรียว เค็ม", 
+    "กรุงเทพมหานครเป็นเมืองหลวงของประเทศไทย",
+    "ภาษาไทยเป็นภาษาราชการ",
+    "การท่องเที่ยวในประเทศไทยมีความสำคัญต่อเศรษฐกิจ"
 ]
 
 # Initialize with text processing pipeline
@@ -44,7 +47,8 @@ stopwords_filter = StopwordsFilter()
 processor = TextProcessor(
     tokenizer, 
     lowercase=True, 
-    stopwords_filter=stopwords_filter
+    stopwords_filter=stopwords_filter,
+    min_token_len=1
 )
 bm25 = ThaiBm25(text_processor=processor)
 
@@ -54,7 +58,14 @@ print(f"Generated {len(embeddings)} embeddings")
 
 # Query embedding
 query_embedding = bm25.query_embed("วัฒนธรรมไทย")
-print(f"Query embedding shape: {len(query_embedding.indices)} terms")
+print(f"Query embedding terms: {len(query_embedding.indices)}")
+
+# Access token details
+query = "วัฒนธรรมไทย" 
+query_tokens = processor.process_text(query)
+for token in query_tokens:
+    token_id = ThaiBm25.compute_token_id(token)
+    print(f"Token '{token}' -> ID: {token_id}")
 ```
 
 ## 📊 Performance
@@ -72,15 +83,20 @@ Thanks to the Rust implementation, ThaiFastEmbed delivers:
 
 ```
 ThaiFastEmbed/
-├── src/                 # Rust core implementation
-│   ├── lib.rs          # PyO3 bindings
-│   ├── bm25.rs         # BM25 algorithm
-│   ├── tokenizer.rs    # Thai tokenization
-│   └── sparse_embedding.rs
-└── thaifastembed/      # Python interface
-    ├── __init__.py
-    ├── bm25.py         # Python wrapper
-    └── text_processor.py
+├── src/                      # Rust core implementation
+│   ├── lib.rs               # PyO3 bindings & exports
+│   ├── bm25.rs              # BM25 algorithm implementation
+│   ├── tokenizer.rs         # Thai tokenization logic
+│   ├── sparse_embedding.rs  # Sparse embedding structures
+│   └── data/                # Thai language resources
+│       ├── stopwords_th.txt # Thai stopwords list
+│       └── words_th.txt     # Thai vocabulary
+├── thaifastembed/           # Python package
+│   ├── __init__.py          # Module exports
+│   └── thaifastembed_rust.* # Compiled Rust extension
+├── Cargo.toml               # Rust dependencies
+├── pyproject.toml           # Python project config
+└── poetry.lock              # Dependency lock file
 ```
 
 ## 🛠️ Development
