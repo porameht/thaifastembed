@@ -1,14 +1,14 @@
 use pyo3::prelude::*;
 
 // Module declarations
+mod bm25;
 mod sparse_embedding;
 mod tokenizer;
-mod bm25;
 
 // Re-export public types - simple and clean
-pub use sparse_embedding::SparseEmbedding;
-pub use tokenizer::{Tokenizer, TextProcessor, StopwordsFilter};
 pub use bm25::ThaiBm25;
+pub use sparse_embedding::SparseEmbedding;
+pub use tokenizer::{StopwordsFilter, TextProcessor, Tokenizer};
 
 /// A Python module implemented in Rust
 #[pymodule]
