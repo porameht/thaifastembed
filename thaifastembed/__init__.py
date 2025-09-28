@@ -7,7 +7,7 @@ compatible with Qdrant's idf modifier for hybrid search applications.
 
 from .thaifastembed_rust import SparseEmbedding, ThaiBm25, Tokenizer, TextProcessor, StopwordsFilter
 
-__version__ = "0.1.0"
+__version__ = "0.1.3"
 __all__ = [
     "ThaiBm25",
     "SparseEmbedding",

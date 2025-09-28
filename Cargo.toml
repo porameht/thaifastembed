@@ -20,6 +20,9 @@ thiserror = "1.0"
 fnv = "1.0"
 murmur3 = "0.5"
 
+[dev-dependencies]
+approx = "0.5"
+
 [profile.release]
 lto = true
 codegen-units = 1

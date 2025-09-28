@@ -21,6 +21,21 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Setup Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: stable
+        components: rustfmt, clippy
+
+    - name: Cache Rust dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
@@ -36,23 +51,16 @@ jobs:
         key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
     - name: Install dependencies
-      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      run: poetry install --no-interaction --no-root
-
-    - name: Install project
       run: poetry install --no-interaction
 
-    - name: Build Rust module
+    - name: Run Rust tests
+      run: cargo test --verbose
+
+    - name: Run Rust clippy
+      run: cargo clippy -- -D warnings
+
+    - name: Check Rust formatting
+      run: cargo fmt -- --check
+
+    - name: Build Rust module for Python
       run: poetry run maturin develop
-
-    - name: Run tests
-      run: |
-        poetry run pytest tests/ -v --cov=thaifastembed --cov-report=xml --cov-report=term-missing
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false

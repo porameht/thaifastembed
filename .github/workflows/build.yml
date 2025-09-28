@@ -23,39 +23,32 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Set up Rust
-      uses: dtolnay/rust-toolchain@stable
+    - name: Setup Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: stable
+        components: rustfmt, clippy
 
-    - name: Install Poetry
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry
-
-    - name: Update poetry lock file
-      run: poetry lock
-
-    - name: Load cached venv
-      id: cached-poetry-dependencies
+    - name: Cache Rust dependencies
       uses: actions/cache@v4
       with:
-        path: .venv
-        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-    - name: Install dependencies
-      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      run: poetry install --no-interaction --no-root
+    - name: Run Rust tests
+      run: cargo test --verbose
+
+    - name: Run Rust clippy
+      run: cargo clippy -- -D warnings
+
+    - name: Check Rust formatting
+      run: cargo fmt -- --check
 
     - name: Install maturin
       run: pip install maturin
-
-    - name: Build Rust extension
-      run: poetry run maturin develop
-
-    - name: Install project
-      run: poetry install --no-interaction
-
-    - name: Run tests
-      run: poetry run pytest tests/ -v
 
     - name: Build wheels
       run: maturin build --release
